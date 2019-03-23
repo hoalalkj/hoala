@@ -8,6 +8,18 @@
     tools:context="com.yeelight.testnewux.MainActivity"
     android:orientation="vertical"
     tools:showIn="@layout/activity_main">
+
+    <TextView
+        android:id="@+id/infotext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/welcome"
+        android:textAllCaps="true"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+        android:textColor="@android:color/black"
+        android:textSize="36sp"
+        android:textStyle="bold" />
+
     <Button
         android:id="@+id/btn_search"
         android:layout_gravity="center_horizontal"
@@ -15,11 +27,7 @@
         android:layout_height="wrap_content"
         android:text="Search"
         />
-    <TextView
-        android:id="@+id/infotext"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Welcome to yeelight demo!" />
+
     <ListView
         android:id="@+id/deviceList"
         android:layout_width="match_parent"

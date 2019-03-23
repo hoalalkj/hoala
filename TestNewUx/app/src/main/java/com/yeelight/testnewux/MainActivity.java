@@ -76,8 +76,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
         WifiManager wm = (WifiManager)getSystemService(Context.WIFI_SERVICE);
         multicastLock = wm.createMulticastLock("test");
         multicastLock.acquire();
@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 HashMap<String, String> bulbInfo = mDeviceList.get(position);
-                Intent intent = new Intent(MainActivity.this, ControlActivity.class);
+                Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                 String ipinfo = bulbInfo.get("Location").split("//")[1];
                 String ip = ipinfo.split(":")[0];
                 String port = ipinfo.split(":")[1];

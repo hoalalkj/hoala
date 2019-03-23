@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.yeelight.testnewux.ControlActivity">
+    tools:context="com.yeelight.testnewux.LightActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -44,27 +44,6 @@
 
         <SeekBar
             android:id="@+id/ct"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="70dp"
-            android:layout_height="wrap_content"
-            android:text="Color:"
-            android:gravity="center"
-            />
-
-        <SeekBar
-            android:id="@+id/color"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1" />

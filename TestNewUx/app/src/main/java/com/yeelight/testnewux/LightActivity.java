@@ -16,7 +16,7 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 
 
-public class ControlActivity extends AppCompatActivity {
+public class LightActivity extends AppCompatActivity {
     private String TAG = "Control";
 
     private static final int MSG_CONNECT_SUCCESS = 0;
@@ -37,7 +37,6 @@ public class ControlActivity extends AppCompatActivity {
     private ProgressDialog mProgressDialog;
     private SeekBar mBrightness;
     private SeekBar mCT;
-    private SeekBar mColor;
     private Button mBtnOn;
     private Button mBtnOff;
     private Button mBtnMusic;
@@ -62,7 +61,7 @@ public class ControlActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_control);
+        setContentView(R.layout.activity_light);
 
         mBulbIP = getIntent().getStringExtra("ip");
         mBulbPort = Integer.parseInt(getIntent().getStringExtra("port"));
@@ -71,10 +70,8 @@ public class ControlActivity extends AppCompatActivity {
         mProgressDialog.setCancelable(false);
         mProgressDialog.show();
         mBrightness = (SeekBar) findViewById(R.id.brightness);
-        mColor = (SeekBar) findViewById(R.id.color);
         mCT = (SeekBar) findViewById(R.id.ct);
-        mCT.setMax(4800);
-        mColor.setMax(360);
+        mCT.setMax(6500);
         mBrightness.setMax(100);
 
         mBrightness.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -90,7 +87,7 @@ public class ControlActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                write(parseBrightnessCmd(seekBar.getProgress()));
+                write(parseBrightnessCmd(seekBar.getProgress() + 1));
             }
         });
         mCT.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -106,23 +103,7 @@ public class ControlActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                write(parseCTCmd(seekBar.getProgress() + 1700));
-            }
-        });
-        mColor.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                write(parseColorCmd(seekBar.getProgress()));
+                write(parseCTCmd(seekBar.getProgress()));
             }
         });
         mBtnOn = (Button) findViewById(R.id.btn_on);
@@ -193,7 +174,7 @@ public class ControlActivity extends AppCompatActivity {
         return cmd;
     }
     private String parseCTCmd(int ct){
-        return CMD_CT.replace("%id",String.valueOf(++mCmdId)).replace("%value",String.valueOf(ct+1700));
+        return CMD_CT.replace("%id",String.valueOf(++mCmdId)).replace("%value",String.valueOf(ct));
     }
     private String parseColorCmd(int color){
         return CMD_HSV.replace("%id",String.valueOf(++mCmdId)).replace("%value",String.valueOf(color));
