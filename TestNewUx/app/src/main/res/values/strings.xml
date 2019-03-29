@@ -7,11 +7,5 @@
     <string name="settings">Settings</string>
     <string name="temperature">Temperature</string>
     <string name="welcome">Welcome to Hoʻala!</string>
-    
-    <string-array name="countdownTimes">
-        <item>0 minutes</item>
-        <item>1 minutes</item>
-        <item>2 minutes</item>
-        <item>5 minutes</item>
-    </string-array>
+    <string name="save">Save</string>
 </resources>

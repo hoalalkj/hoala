@@ -1,7 +1,6 @@
 package com.yeelight.testnewux;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Build;
 import android.os.Handler;
@@ -10,9 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
+import android.widget.Button;
 import android.widget.TextClock;
 import android.widget.TimePicker;
 
@@ -28,10 +25,7 @@ public class AlarmActivity extends AppCompatActivity {
 
     private static final int MSG_CONNECT_SUCCESS = 0;
     private static final int MSG_CONNECT_FAILURE = 1;
-    private static final String CMD_ON = "{\"id\":%id,\"method\":\"set_power\",\"params\":[\"on\",\"smooth\",500]}\r\n" ;
-    private static final String CMD_OFF = "{\"id\":%id,\"method\":\"set_power\",\"params\":[\"off\",\"smooth\",500]}\r\n" ;
-    private static final String CMD_CT = "{\"id\":%id,\"method\":\"set_ct_abx\",\"params\":[%value, \"smooth\", 500]}\r\n";
-    private static final String CMD_BRIGHTNESS = "{\"id\":%id,\"method\":\"set_bright\",\"params\":[%value, \"smooth\", 200]}\r\n";
+    private static final String CMD_BRIGHTNESS = "{\"id\":%id,\"method\":\"set_bright\",\"params\":[100, \"smooth\", %duration]}\r\n";
 
     private int mCmdId;
     private Socket mSocket;
@@ -57,8 +51,7 @@ public class AlarmActivity extends AppCompatActivity {
 
     private TimePicker alarmTime;
     private TextClock currentTime;
-    private Integer countdownTime;
-    private Integer incrementValue;
+    private Button saveButton;
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
@@ -75,86 +68,38 @@ public class AlarmActivity extends AppCompatActivity {
 
         alarmTime = (TimePicker) findViewById(R.id.timePicker);
         currentTime = (TextClock) findViewById(R.id.textClock);
+        saveButton = (Button) findViewById(R.id.save);
 
-//        Spinner alarmCountdown = (Spinner) findViewById(R.id.alarmCountdown);
-//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-//                this,
-//                R.array.countdownTimes,
-//                android.R.layout.simple_spinner_item);
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        alarmCountdown.setAdapter(adapter);
-//
-//        alarmCountdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
-//                String selectedTime = (String) adapterView.getItemAtPosition(pos);
-//                String intValue = selectedTime.replaceAll("[^0-9]", "");
-//                countdownTime = Integer.parseInt(intValue);
-// //               incrementValue = (100 / (countdownTime*60));
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//            }
-//        });
-
-        Timer alarm = new Timer();
-        alarm.scheduleAtFixedRate(new TimerTask() {
-            Integer i = 1;
+        saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void run() {
- //               if (countdownTime == 0) {
-                    if (currentTime.getText().toString().equals(AlarmTime())) {
-                        write(parseBrightnessCmd(i));
-                        if (i < 101) {
-                            i++;
+            public void onClick(View view) {
+                final Timer alarm = new Timer();
+                alarm.scheduleAtFixedRate(new TimerTask() {
+                    @Override
+                    public void run() {
+                        if (currentTime.getText().toString().equals(AlarmTime())) {
+                            write(parseBrightnessCmd(60000));
+                            alarm.cancel();
                         }
                     }
- //               } else {
- //                   if (currentTime.getText().toString().equals(AlarmTime())) {
- //                       lightIncrement();
- //                   }
- //               }
+                }, 0, 1000);
             }
-        }, 0, 1000);
+        });
         connect();
     }
-
-//    private void lightIncrement() {
-//        Timer lightIncrement = new Timer();
-//        lightIncrement.scheduleAtFixedRate(new TimerTask() {
-//
-//            @Override
-//            public void run() {
-//                write(parseBrightnessCmd(1));
-//            }
-//        }, 0, incrementValue*1000);
-//    }
 
     private String AlarmTime() {
         Integer alarmHour = alarmTime.getCurrentHour();
         Integer alarmMinute = alarmTime.getCurrentMinute();
+        alarmMinute --;
 
         String stringAlarmTime;
-
- //       if (countdownTime == 0) {
-            if (alarmHour > 12) {
-                alarmHour = alarmHour - 12;
-                stringAlarmTime = alarmHour.toString().concat(":").concat(alarmMinute.toString()).concat(" PM");
-            } else {
-                stringAlarmTime = alarmHour.toString().concat(":").concat(alarmMinute.toString()).concat(" AM");
-            }
-//        } else {
-//            alarmMinute = alarmMinute - countdownTime;
-//            if (alarmHour > 12) {
-//                alarmHour = alarmHour - 12;
-//                stringAlarmTime = alarmHour.toString().concat(":").concat(alarmMinute.toString()).concat(" PM");
-//            } else {
-//                stringAlarmTime = alarmHour.toString().concat(":").concat(alarmMinute.toString()).concat(" AM");
-//            }
-//        }
+        if (alarmHour > 12) {
+            alarmHour = alarmHour - 12;
+            stringAlarmTime = alarmHour.toString().concat(":").concat(alarmMinute.toString()).concat(" PM");
+        } else {
+            stringAlarmTime = alarmHour.toString().concat(":").concat(alarmMinute.toString()).concat(" AM");
+        }
         return stringAlarmTime;
     }
 
@@ -199,11 +144,8 @@ public class AlarmActivity extends AppCompatActivity {
         }
 
     }
-    private String parseSwitch(boolean on){
-        return CMD_ON.replace("%id", String.valueOf(++mCmdId));
-    }
-    private String parseBrightnessCmd(int brightness){
-        return CMD_BRIGHTNESS.replace("%id",String.valueOf(++mCmdId)).replace("%value",String.valueOf(brightness)).replace("%effect",String.valueOf("smooth").replace("%duration",String.valueOf(1000)));
+    private String parseBrightnessCmd(int duration){
+        return CMD_BRIGHTNESS.replace("%id",String.valueOf(++mCmdId)).replace("%duration",String.valueOf(duration));
     }
     private void write(String cmd){
         if (mBos != null && mSocket.isConnected()){
