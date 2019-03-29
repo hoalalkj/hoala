@@ -1,5 +1,8 @@
 package com.yeelight.testnewux;
 
+import android.app.ProgressDialog;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,14 +24,31 @@ import java.io.IOException;
 
 public class TemperatureActivity extends AppCompatActivity {
     private String TAG = "Control";
+    private static final int MSG_CONNECT_SUCCESS = 0;
+    private static final int MSG_CONNECT_FAILURE = 1;
     private static final String CMD_CT = "{\"id\":%id,\"method\":\"set_ct_abx\",\"params\":[%value, \"smooth\", 500]}\r\n";
 
     private int mCmdId;
     private Socket mSocket;
     private String mBulbIP;
     private int mBulbPort;
+    private ProgressDialog mProgressDialog;
     private BufferedOutputStream mBos;
     private BufferedReader mReader;
+    private Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case MSG_CONNECT_FAILURE:
+                    mProgressDialog.dismiss();
+                    break;
+                case MSG_CONNECT_SUCCESS:
+                    mProgressDialog.dismiss();
+                    break;
+            }
+        }
+    };
 
 
     TextView text = null;
@@ -42,6 +62,10 @@ public class TemperatureActivity extends AppCompatActivity {
         setContentView(R.layout.activity_temperature);
         mBulbIP = getIntent().getStringExtra("ip");
         mBulbPort = Integer.parseInt(getIntent().getStringExtra("port"));
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setMessage("Connecting...");
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.show();
         new TemperatureGetter().execute();
     }
 
@@ -74,14 +98,13 @@ public class TemperatureActivity extends AppCompatActivity {
             text = (TextView) findViewById(R.id.textView);
             text.setText(TemperatureString);
             if((int) temp_f < 65){
-                write(parseCTCmd(3000));
+                write(parseCTCmd(6500));
 
             }
             else{
                 System.out.println("HELLO");
-                write(parseCTCmd(3000));
+                write(parseCTCmd(2700));
             }
-
         }
     }
 
@@ -96,6 +119,7 @@ public class TemperatureActivity extends AppCompatActivity {
                     mSocket = new Socket(mBulbIP, mBulbPort);
                     mSocket.setKeepAlive(true);
                     mBos = new BufferedOutputStream(mSocket.getOutputStream());
+                    mHandler.sendEmptyMessage(MSG_CONNECT_SUCCESS);
                     mReader = new BufferedReader(new InputStreamReader(mSocket.getInputStream()));
                     while (cmd_run) {
                         try {
@@ -108,7 +132,7 @@ public class TemperatureActivity extends AppCompatActivity {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-
+                    mHandler.sendEmptyMessage(MSG_CONNECT_FAILURE);
                 }
             }
         }).start();
