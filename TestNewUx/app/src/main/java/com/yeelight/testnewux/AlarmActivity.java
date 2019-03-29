@@ -1,6 +1,6 @@
 package com.yeelight.testnewux;
 
-import android.annotation.TargetApi;
+//import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.os.Build;
 import android.os.Handler;
@@ -53,7 +53,7 @@ public class AlarmActivity extends AppCompatActivity {
     private TextClock currentTime;
     private Button saveButton;
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+//    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
