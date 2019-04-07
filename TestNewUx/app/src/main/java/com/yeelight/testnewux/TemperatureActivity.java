@@ -87,6 +87,14 @@ public class TemperatureActivity extends AppCompatActivity {
                 temp_f = (temp_k - 273.15) * 1.8 + 32;
                 TemperatureString = Integer.toString((int) temp_f);
                 connect();
+                if((int) temp_f < 65){
+                    write(parseCTCmd(6500));
+
+                }
+                else{
+                    System.out.println("HELLO");
+                    write(parseCTCmd(2700));
+                }
             } catch (IOException | JSONException e) {
                 e.printStackTrace();
             }
@@ -97,14 +105,14 @@ public class TemperatureActivity extends AppCompatActivity {
         protected void onPostExecute(Void result) {
             text = (TextView) findViewById(R.id.textView);
             text.setText(TemperatureString);
-            if((int) temp_f < 65){
-                write(parseCTCmd(6500));
-
-            }
-            else{
-                System.out.println("HELLO");
-                write(parseCTCmd(2700));
-            }
+//            if((int) temp_f < 65){
+//                write(parseCTCmd(6500));
+//
+//            }
+//            else{
+//                System.out.println("HELLO");
+//                write(parseCTCmd(2700));
+//            }
         }
     }
 
@@ -123,8 +131,17 @@ public class TemperatureActivity extends AppCompatActivity {
                     mReader = new BufferedReader(new InputStreamReader(mSocket.getInputStream()));
                     while (cmd_run) {
                         try {
+                            if((int) temp_f < 65){
+                                write(parseCTCmd(6500));
+
+                            }
+                            else{
+                                System.out.println("HELLO");
+                                write(parseCTCmd(2700));
+                            }
                             String value = mReader.readLine();
                             Log.d(TAG, "value = " + value);
+
                         } catch (Exception e) {
 
                         }
