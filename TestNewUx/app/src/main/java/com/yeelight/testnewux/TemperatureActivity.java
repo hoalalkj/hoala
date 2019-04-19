@@ -86,7 +86,7 @@ public class TemperatureActivity extends AppCompatActivity {
                 JSONObject jsonObj = new JSONObject(jsonText);
                 JSONObject main1 = (JSONObject) jsonObj.get("main");
                 JSONObject weather1 = (JSONObject) jsonObj.get("weather");
-                forcast = (String) weather1.get("main");
+                forcast =  weather1.get("main").toString();
                 temp_k = (double) main1.get("temp");
                 temp_f = (temp_k - 273.15) * 1.8 + 32;
                 TemperatureString = Integer.toString((int) temp_f);
