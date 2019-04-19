@@ -27,6 +27,7 @@ public class TemperatureActivity extends AppCompatActivity {
     private static final int MSG_CONNECT_SUCCESS = 0;
     private static final int MSG_CONNECT_FAILURE = 1;
     private static final String CMD_CT = "{\"id\":%id,\"method\":\"set_ct_abx\",\"params\":[%value, \"smooth\", 500]}\r\n";
+    private static final String CMD_BRIGHTNESS = "{\"id\":%id,\"method\":\"set_bright\",\"params\":[%value, \"smooth\", 200]}\r\n";
 
     private int mCmdId;
     private Socket mSocket;
@@ -54,6 +55,7 @@ public class TemperatureActivity extends AppCompatActivity {
     TextView text = null;
     double temp_k;
     double temp_f;
+    String forcast;
     String TemperatureString;
 
     @Override
@@ -83,10 +85,18 @@ public class TemperatureActivity extends AppCompatActivity {
                 String jsonText = sb.toString();
                 JSONObject jsonObj = new JSONObject(jsonText);
                 JSONObject main1 = (JSONObject) jsonObj.get("main");
+                JSONObject weather1 = (JSONObject) jsonObj.get("weather");
+                forcast = (String) weather1.get("main");
                 temp_k = (double) main1.get("temp");
                 temp_f = (temp_k - 273.15) * 1.8 + 32;
                 TemperatureString = Integer.toString((int) temp_f);
                 connect();
+                if(forcast.equals("Clear")){
+                    write(parseBrightnessCmd(100));
+                }
+                else{
+                    write(parseBrightnessCmd(1));
+                }
                 if((int) temp_f < 65){
                     write(parseCTCmd(6500));
 
@@ -131,6 +141,12 @@ public class TemperatureActivity extends AppCompatActivity {
                     mReader = new BufferedReader(new InputStreamReader(mSocket.getInputStream()));
                     while (cmd_run) {
                         try {
+                            if(forcast.equals("Clear")){
+                                write(parseBrightnessCmd(100));
+                            }
+                            else{
+                                write(parseBrightnessCmd(1));
+                            }
                             if((int) temp_f < 65){
                                 write(parseCTCmd(6500));
 
@@ -168,6 +184,10 @@ public class TemperatureActivity extends AppCompatActivity {
     }
     private String parseCTCmd(int ct){
         return CMD_CT.replace("%id",String.valueOf(++mCmdId)).replace("%value",String.valueOf(ct));
+    }
+
+    private String parseBrightnessCmd(int brightness){
+        return CMD_BRIGHTNESS.replace("%id",String.valueOf(++mCmdId)).replace("%value",String.valueOf(brightness));
     }
 
     private void write(String cmd){
