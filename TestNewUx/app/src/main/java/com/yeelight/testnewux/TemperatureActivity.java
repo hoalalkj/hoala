@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -85,8 +86,9 @@ public class TemperatureActivity extends AppCompatActivity {
                 String jsonText = sb.toString();
                 JSONObject jsonObj = new JSONObject(jsonText);
                 JSONObject main1 = (JSONObject) jsonObj.get("main");
-                JSONObject weather1 = (JSONObject) jsonObj.get("weather");
-                forcast =  weather1.get("main").toString();
+                JSONArray weather1 = (JSONArray)jsonObj.get("weather");
+                JSONObject weatherMain = (JSONObject) weather1.get(1);
+                forcast =  weatherMain.get("main").toString();
                 temp_k = (double) main1.get("temp");
                 temp_f = (temp_k - 273.15) * 1.8 + 32;
                 TemperatureString = Integer.toString((int) temp_f);
