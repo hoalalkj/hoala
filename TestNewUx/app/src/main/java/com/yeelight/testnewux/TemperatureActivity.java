@@ -114,7 +114,6 @@ public class TemperatureActivity extends AppCompatActivity {
 
             }
             else{
-                System.out.println("HELLO");
                 write(parseCTCmd(2700));
             }
         }
