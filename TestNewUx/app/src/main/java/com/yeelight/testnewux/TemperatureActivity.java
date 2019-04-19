@@ -87,26 +87,12 @@ public class TemperatureActivity extends AppCompatActivity {
                 JSONObject jsonObj = new JSONObject(jsonText);
                 JSONObject main1 = (JSONObject) jsonObj.get("main");
                 JSONArray weather1 = (JSONArray)jsonObj.get("weather");
-                JSONObject weatherMain = (JSONObject) weather1.get(1);
+                JSONObject weatherMain = (JSONObject) weather1.get(0);
                 forcast =  weatherMain.get("main").toString();
                 temp_k = (double) main1.get("temp");
                 temp_f = (temp_k - 273.15) * 1.8 + 32;
                 TemperatureString = Integer.toString((int) temp_f);
                 connect();
-                if(forcast.equals("Clear")){
-                    write(parseBrightnessCmd(100));
-                }
-                else{
-                    write(parseBrightnessCmd(1));
-                }
-                if((int) temp_f < 65){
-                    write(parseCTCmd(6500));
-
-                }
-                else{
-                    System.out.println("HELLO");
-                    write(parseCTCmd(2700));
-                }
             } catch (IOException | JSONException e) {
                 e.printStackTrace();
             }
@@ -117,14 +103,20 @@ public class TemperatureActivity extends AppCompatActivity {
         protected void onPostExecute(Void result) {
             text = (TextView) findViewById(R.id.textView);
             text.setText(TemperatureString);
-//            if((int) temp_f < 65){
-//                write(parseCTCmd(6500));
-//
-//            }
-//            else{
-//                System.out.println("HELLO");
-//                write(parseCTCmd(2700));
-//            }
+            if(forcast.equals("Clear")){
+                write(parseBrightnessCmd(100));
+            }
+            else{
+                write(parseBrightnessCmd(1));
+            }
+            if((int) temp_f < 65){
+                write(parseCTCmd(6500));
+
+            }
+            else{
+                System.out.println("HELLO");
+                write(parseCTCmd(2700));
+            }
         }
     }
 
@@ -143,20 +135,6 @@ public class TemperatureActivity extends AppCompatActivity {
                     mReader = new BufferedReader(new InputStreamReader(mSocket.getInputStream()));
                     while (cmd_run) {
                         try {
-                            if(forcast.equals("Clear")){
-                                write(parseBrightnessCmd(100));
-                            }
-                            else{
-                                write(parseBrightnessCmd(1));
-                            }
-                            if((int) temp_f < 65){
-                                write(parseCTCmd(6500));
-
-                            }
-                            else{
-                                System.out.println("HELLO");
-                                write(parseCTCmd(2700));
-                            }
                             String value = mReader.readLine();
                             Log.d(TAG, "value = " + value);
 
