@@ -4,16 +4,14 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
-
-import java.net.Socket;
 
 public class HomeActivity extends AppCompatActivity {
     private ImageButton alarmButton;
     private ImageButton lightButton;
     private ImageButton settingsButton;
     private ImageButton temperatureButton;
+    private ImageButton moodButton;
     private String mBulbIP;
     private String mBulbPort;
 
@@ -38,6 +36,14 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 openLight();
+            }
+        });
+
+        moodButton = (ImageButton) findViewById(R.id.Mood);
+        ((View) moodButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openMood();
             }
         });
 
@@ -67,6 +73,13 @@ public class HomeActivity extends AppCompatActivity {
 
     public void openLight() {
         Intent intent = new Intent(this, LightActivity.class);
+        intent.putExtra("ip", mBulbIP);
+        intent.putExtra("port", mBulbPort);
+        startActivity(intent);
+    }
+
+    public void openMood() {
+        Intent intent = new Intent(this, MoodActivity.class);
         intent.putExtra("ip", mBulbIP);
         intent.putExtra("port", mBulbPort);
         startActivity(intent);

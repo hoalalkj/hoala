@@ -8,4 +8,11 @@
     <string name="temperature">Temperature</string>
     <string name="welcome">Welcome to Hoʻala!</string>
     <string name="save">Save</string>
+    <string name="mood">Mood</string>
+    <string name="title_activity_mood">MoodActivity</string>
+    <string name="MoodPrompt">HOW ARE YOU FEELING TODAY?</string>
+    <string name="sad">Sad</string>
+    <string name="party">Party</string>
+    <string name="happy">Happy</string>
+    <string name="sleepy">Sleepy</string>
 </resources>
