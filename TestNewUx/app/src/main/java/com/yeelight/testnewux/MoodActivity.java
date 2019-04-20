@@ -79,8 +79,8 @@ public class MoodActivity extends AppCompatActivity {
         ((View) sadMood).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                write(parseCTCmd(3500));
-                write(parseBrightnessCmd(90,20000));
+                write(parseCTCmd(6000));
+                write(parseBrightnessCmd(20,20000));
             }
         });
 
