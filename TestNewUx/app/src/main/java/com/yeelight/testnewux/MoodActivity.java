@@ -15,8 +15,19 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import com.spotify.android.appremote.api.ConnectionParams;
+import com.spotify.android.appremote.api.Connector;
+import com.spotify.android.appremote.api.SpotifyAppRemote;
+
+import com.spotify.protocol.client.Subscription;
+import com.spotify.protocol.types.PlayerState;
+import com.spotify.protocol.types.Track;
 
 public class MoodActivity extends AppCompatActivity {
+    private static final String CLIENT_ID = "1f54070c576c4cef913f1a80d607164b";
+    private static final String REDIRECT_URI = "https://github.com/hoalalkj/hoala/tree/spotify-function";
+    private SpotifyAppRemote mSpotifyAppRemote;
+
     private String TAG = "Control";
 
     private static final int MSG_CONNECT_SUCCESS = 0;
@@ -59,6 +70,31 @@ public class MoodActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mood);
 
+        ConnectionParams connectionParams =
+                new ConnectionParams.Builder(CLIENT_ID)
+                        .setRedirectUri(REDIRECT_URI)
+                        .showAuthView(true)
+                        .build();
+        SpotifyAppRemote.connect(this, connectionParams,
+                new Connector.ConnectionListener() {
+
+                    @Override
+                    public void onConnected(SpotifyAppRemote spotifyAppRemote) {
+                        mSpotifyAppRemote = spotifyAppRemote;
+                        Log.d("MoodActivity", "Connected! Yay!");
+
+                        // Now you can start interacting with App Remote
+                        connected();
+                    }
+
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        Log.e("MoodActivity", throwable.getMessage(), throwable);
+
+                        // Something went wrong when attempting to connect! Handle errors here
+                    }
+                });
+
         mBulbIP = getIntent().getStringExtra("ip");
         mBulbPort = Integer.parseInt(getIntent().getStringExtra("port"));
         mProgressDialog = new ProgressDialog(this);
@@ -67,39 +103,43 @@ public class MoodActivity extends AppCompatActivity {
         mProgressDialog.show();
 
         happyMood = (ImageButton) findViewById(R.id.Happy);
-        ((View) happyMood).setOnClickListener(new View.OnClickListener() {
+        happyMood.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 write(parseCTCmd(5000));
                 write(parseBrightnessCmd(80,10000));
+                mSpotifyAppRemote.getPlayerApi().play("spotify:playlist:7dlDBSON8kWYTu24fIspyK");
             }
         });
 
         sadMood = (ImageButton) findViewById(R.id.Sad);
-        ((View) sadMood).setOnClickListener(new View.OnClickListener() {
+        sadMood.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 write(parseCTCmd(6000));
                 write(parseBrightnessCmd(20,20000));
+                mSpotifyAppRemote.getPlayerApi().play("spotify:playlist:51IIzXB9EwhAjqu19Uh4HS");
             }
         });
 
         sleepyMood = (ImageButton) findViewById(R.id.Sleepy);
-        ((View) sleepyMood).setOnClickListener(new View.OnClickListener() {
+        sleepyMood.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 write(parseCTCmd(2700));
                 write(parseBrightnessCmd(1,10000));
                 customDialog("Stop Sleep Mood", "Click 'Stop' to turn off light bulb.", "cancelMethod2");
+                mSpotifyAppRemote.getPlayerApi().play("spotify:playlist:3Vn2QjR5Kt4Iup3cPTSza4");
             }
         });
 
         partyMood = (ImageButton) findViewById(R.id.Party);
-        ((View) partyMood).setOnClickListener(new View.OnClickListener() {
+        partyMood.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 write(parsePartyCmd());
                 customDialog("Stop Party Mood", "Click 'Stop' to stop light bulb.", "cancelMethod");
+                mSpotifyAppRemote.getPlayerApi().play("spotify:playlist:4pDc5hu99c1qSPqKp57yEB");
             }
         });
         connect();
@@ -115,6 +155,26 @@ public class MoodActivity extends AppCompatActivity {
         write(parseSleepStopCmd());
         Log.d(TAG, "Sleepy Mood Stopped");
         toastMessage("Sleepy Mood Stopped");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // We will start writing our code here.
+        // Set the connection parameters
+
+
+    }
+
+    private void connected() {
+        // Then we will write some more code here.
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        SpotifyAppRemote.disconnect(mSpotifyAppRemote);
+        // Aaand we will finish off here.
     }
 
     public void customDialog(String title, String message, final String cancelMethod){
