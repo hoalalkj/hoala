@@ -47,14 +47,6 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        settingsButton = (ImageButton) findViewById(R.id.Settings);
-        ((View) settingsButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openSettings();
-            }
-        });
-
         temperatureButton = (ImageButton) findViewById(R.id.Temperature);
         ((View) temperatureButton).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,11 +74,6 @@ public class HomeActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MoodActivity.class);
         intent.putExtra("ip", mBulbIP);
         intent.putExtra("port", mBulbPort);
-        startActivity(intent);
-    }
-
-    public void openSettings() {
-        Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
     }
 

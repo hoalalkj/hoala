@@ -53,7 +53,8 @@ public class TemperatureActivity extends AppCompatActivity {
     };
 
 
-    TextView text = null;
+    TextView textTemp = null;
+    TextView textForecast = null;
     double temp_k;
     double temp_f;
     String forcast;
@@ -101,8 +102,10 @@ public class TemperatureActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void result) {
-            text = (TextView) findViewById(R.id.textView);
-            text.setText(TemperatureString);
+            textTemp = (TextView) findViewById(R.id.textView);
+            textTemp.setText(TemperatureString);
+            textForecast = (TextView) findViewById(R.id.textView3);
+            textForecast.setText(forcast);
             if(forcast.equals("Clear")){
                 write(parseBrightnessCmd(100));
             }

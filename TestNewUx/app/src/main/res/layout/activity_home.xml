@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="56dp"
         android:layout_marginLeft="56dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="128dp"
         android:background="@android:color/transparent"
         android:contentDescription="@string/alarm"
         android:src="@mipmap/hoala_alarm"
@@ -58,28 +58,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Light"
         app:layout_constraintVertical_bias="0.02" />
-
-    <ImageButton
-        android:id="@+id/Settings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
-        android:background="@android:color/transparent"
-        android:contentDescription="@string/settings"
-        android:src="@mipmap/hoala_settings"
-        app:layout_constraintStart_toStartOf="@+id/Mood"
-        app:layout_constraintTop_toBottomOf="@+id/Mood" />
-
-    <TextView
-        android:id="@+id/SettingsLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="72dp"
-        android:layout_marginLeft="72dp"
-        android:text="@string/settings"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Settings" />
 
     <ImageButton
         android:id="@+id/Temperature"

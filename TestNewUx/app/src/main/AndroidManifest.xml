@@ -21,7 +21,6 @@
         android:theme="@style/AppTheme">
         <activity android:name=".MoodActivity"></activity>
         <activity android:name=".AlarmActivity" />
-        <activity android:name=".SettingsActivity" />
         <activity android:name=".TemperatureActivity" />
         <activity android:name=".LightActivity" />
         <activity android:name=".HomeActivity" />
